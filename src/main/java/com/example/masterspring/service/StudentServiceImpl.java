@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.Transactional;
 
 //import javax.transaction.Transaction;
 import org.hibernate.Transaction;
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 
 import com.example.masterspring.entities.Student;
 import com.example.masterspring.repos.StudentRepository;
@@ -60,16 +62,20 @@ public class StudentServiceImpl implements StudentService{
 	}
 
 	@Override
+	@Transactional
 	public Student update(Student stuent,Integer id) {
 		
+		System.out.println(stuent.getName()+"**************************");
 		Student getStudent = this.repo.findById(id).get();
 		getStudent.setName(stuent.getName());
 		getStudent.toString();
 		return repo.save(getStudent);
+		
 	}
 
 	
 	@Override
+	@Transactional
 	public void delete(Integer id) {
 	Optional< Student >  getStudent = this.repo.findById(id);
 		

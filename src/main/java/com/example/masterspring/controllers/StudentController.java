@@ -43,14 +43,22 @@ public class StudentController {
 	@Autowired
 	private JwtUtil jwtTokenUtil;
 	
-	@GetMapping("/hello")
+	@GetMapping("/")
 	public String hello() {
 		return "hello Udula Lets Do this!";
 	}
 	
+	
+	@GetMapping("/login")
+	public String login() {
+		return "Hello Login";
+	}
+	
+	
 	@RequestMapping(value="/authenticate",method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
+	public String createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
 		
+		System.out.println(authenticationRequest);
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName(), authenticationRequest.getPassword()));
 		}catch (Exception e) {
@@ -58,12 +66,14 @@ public class StudentController {
 			throw new Exception("Incorect username or password",e);
 		}
 		
+		
+		
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserName());
 		
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
 		
-		
-		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+		return jwt;
+//		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 				
 	}
 	

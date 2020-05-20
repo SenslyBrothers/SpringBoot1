@@ -2,6 +2,7 @@ package com.example.masterspring.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,8 +39,14 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
+//		httpSecurity.cors().disable();
 		httpSecurity.csrf().disable()
-		.authorizeRequests().antMatchers("/authenticate").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		.authorizeRequests().antMatchers("/authenticate").
+			permitAll().antMatchers(HttpMethod.OPTIONS,"/**").
+			permitAll().anyRequest().
+			authenticated().and().
+			sessionManagement().
+			sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 		
